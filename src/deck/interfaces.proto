@@ -1,0 +1,67 @@
+syntax = "proto3";
+package deck;
+
+message ClientMessage {
+	enum OperationType {
+		HEARTBEAT = 0;
+		STORE = 1;
+		LOAD = 2;
+		CHECK_EXISTS = 3;
+	}
+	OperationType Operation = 1;
+	
+	string Topic = 2;
+	int64  Key = 3;
+	bytes  Value = 4;
+
+	enum StatusType {
+		SUCCESS = 0;
+		INTERNAL_ERROR = 1;
+		MARSHALING_ERROR = 2;
+		KEY_EXISTS = 3;
+		KEY_DOESNT_EXIST = 4;
+		TOPIC_NOT_SUPPORTED = 5;
+	}
+	StatusType Status = 5;
+}
+
+
+message ServerDetails {
+	string url = 1;
+	int32 port = 2;
+}
+
+message ServerGroup {
+	string groupName = 1;
+	repeated ServerDetails servers = 2;
+}
+
+message TopicServerLayout {
+	repeated ServerGroup groups = 1;
+}
+
+message TopicLayoutMessage {
+	enum OperationType {
+		HEARTBEAT = 0;
+		CREATE = 1;
+		LOAD = 2;
+		CHECK_EXISTS = 3;
+	}
+	OperationType Operation = 1;
+	
+	string topic = 2;
+	
+	string clientHost = 3;
+	string clientGroup = 4;
+	TopicServerLayout layout = 5;
+	
+	enum StatusType {
+		SUCCESS = 0;
+		INTERNAL_ERROR = 1;
+		MARSHALING_ERROR = 2;
+		TOPIC_EXISTS = 3;
+		TOPIC_DOESNT_EXIST = 4;
+		TOPIC_NOT_SUPPORTED = 5;
+	}
+	StatusType Status = 6;
+}
